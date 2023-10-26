@@ -1,15 +1,31 @@
 <?php
-/**
- * Contao Open Source CMS
- *
- *
- * @package   Contao
- * @author    Jimmy Nogherot
- * @license   Not free
- * @copyright Tabula Rasa
+
+/*
+<!#CR>
+ ************************************************************************************************************************
+ *                                                    Copyrigths ©                                                      *
+ * -------------------------------------------------------------------------------------------------------------------- *
+ *          Authors Names    > Jimmy Nogherot                                                                           *
+ *          Authors Email    > jimmy@tabularasa.fr                                                                      *
+ *          Company Name     > Tabularasa                                                                               *
+ *          Company Email    > jimmy@tabularasa.fr                                                                      *
+ *          Company Websites > https://tabularasa.fr                                                                    *
+ * -------------------------------------------------------------------------------------------------------------------- *
+ *                                           File and License Informations                                              *
+ * -------------------------------------------------------------------------------------------------------------------- *
+ *          File Name        > <!#FN> TypeChamp.php </#FN>
+ *          File Birth       > <!#FB> 2023/10/26 11:09:08.151 </#FB>                                                    *
+ *          File Mod         > <!#FT> 2023/10/26 11:12:28.500 </#FT>                                                    *
+ *          License          > <!#LT> BSD-3-Clause-Attribution </#LT>
+ *                             <!#LU> https://spdx.org/licenses/BSD-3-Clause-Attribution.html </#LU>
+ *                             <!#LD> This file may not be redistributed in whole or significant part. </#LD>
+ *          File Version     > <!#FV> 1.0.0 </#FV>
+ *                                                                                                                      *
+ ******************************************* VSCode Extension: Version Boss *********************************************
+</#CR>
  */
 
-namespace trdev\ContaoBaseBundle\Classes;
+namespace trdev\ContaoTypechampBundle\Classes;
 
 class TypeChamp extends \Backend
 {
@@ -67,8 +83,8 @@ class TypeChamp extends \Backend
                 'tl_class'  => 'clr',
                 'mandatory' => $obligatoire,
             ),
-            'load_callback' => array(array('trdev\ContaoBaseBundle\Classes\TypeChamp', 'convertAbsoluteLinks')),
-            'save_callback' => array(array('trdev\ContaoBaseBundle\Classes\TypeChamp', 'convertRelativeLinks')),
+            'load_callback' => array(array('trdev\ContaoTypechampBundle\Classes\TypeChamp', 'convertAbsoluteLinks')),
+            'save_callback' => array(array('trdev\ContaoTypechampBundle\Classes\TypeChamp', 'convertRelativeLinks')),
             'sql'           => "mediumtext NULL",
         );
 
@@ -482,7 +498,7 @@ class TypeChamp extends \Backend
 
     public static function printIcon($fichier)
     {
-        return sprintf('%simg/%s', $GLOBALS['assetsFolder']['ContaoBaseBundle'], $fichier);
+        return sprintf('%simg/%s', $GLOBALS['assetsFolder']['ContaoTypechampBundle'], $fichier);
     }
 
     public function convertAbsoluteLinks($strContent)
