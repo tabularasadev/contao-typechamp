@@ -191,13 +191,14 @@ class TypeChamp extends \Backend
      * @param array $options Liste des options dans un tableau (avec ou sans key)
      * @return array
      */
-    public static function checkbox($options)
+    public static function checkbox($options, $obligatoire = false)
     {
         $item = array(
             'inputType' => 'checkbox',
             'options'   => $options,
             'eval'      => array(
                 'multiple' => true,
+                'mandatory' => true
             ),
             'sql'       => 'blob NULL',
         );
