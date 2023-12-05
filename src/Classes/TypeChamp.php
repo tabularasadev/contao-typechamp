@@ -185,6 +185,30 @@ class TypeChamp extends \Backend
     }
     #endregion
 
+    #region SelectCallback
+    /**
+     * Créer un champ Select avec des données à partir d'un callback
+     * @param array $options Liste des options array('maClasse','MaFonction')
+     * @param bool $multiple
+     * @param bool $includeBlankOption
+     * @param bool $obligatoire
+     * @param bool $autoSubmit Si on utilise des subpalettes
+     * @return array
+     */
+    public static function selectCallback($options, $multiple = false, $includeBlankOption = false, $obligatoire = false, $autoSubmit = false)
+    {
+        $item = array(
+            'inputType'        => 'select',
+            'filter'           => true,
+            'options_callback' => $options,
+            'sql'              => ($multiple === true) ? "blob NULL" : "varchar(255) NOT NULL default ''",
+            'eval'             => array('chosen' => true, 'includeBlankOption' => $includeBlankOption, 'multiple' => $multiple, 'tl_class' => 'w50', 'mandatory' => $obligatoire, 'submitOnChange' => $autoSubmit),
+        );
+
+        return $item;
+    }
+    #endregion
+
     #region Checkboxs
     /**
      * Créer un champ Checkbox
@@ -195,10 +219,11 @@ class TypeChamp extends \Backend
     {
         $item = array(
             'inputType' => 'checkbox',
+            'filter'    => true,
             'options'   => $options,
             'eval'      => array(
-                'multiple' => true,
-                'mandatory' => true
+                'multiple'  => true,
+                'mandatory' => true,
             ),
             'sql'       => 'blob NULL',
         );
