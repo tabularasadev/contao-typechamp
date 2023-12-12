@@ -15,11 +15,11 @@
  * -------------------------------------------------------------------------------------------------------------------- *
  *          File Name        > <!#FN> TypeChamp.php </#FN>
  *          File Birth       > <!#FB> 2023/10/26 11:09:08.151 </#FB>                                                    *
- *          File Mod         > <!#FT> 2023/10/26 11:12:28.500 </#FT>                                                    *
+ *          File Mod         > <!#FT> 2023/12/12 14:31:56.087 </#FT>                                                    *
  *          License          > <!#LT> BSD-3-Clause-Attribution </#LT>
  *                             <!#LU> https://spdx.org/licenses/BSD-3-Clause-Attribution.html </#LU>
  *                             <!#LD> This file may not be redistributed in whole or significant part. </#LD>
- *          File Version     > <!#FV> 1.0.0 </#FV>
+ *          File Version     > <!#FV> 1.0.2 </#FV>
  *                                                                                                                      *
  ******************************************* VSCode Extension: Version Boss *********************************************
 </#CR>
@@ -31,6 +31,7 @@ class TypeChamp extends \Backend
 {
     #region Texte
     /**
+     * text
      * Créer un champ Texte en lien avec une table existante
      * @param bool $obligatoire
      * @param string $classe w50/clr
@@ -51,6 +52,7 @@ class TypeChamp extends \Backend
 
     #region Number
     /**
+     * number
      * Créer un champ numérique en lien avec une table existante
      * @param bool $obligatoire
      * @return array
@@ -70,8 +72,9 @@ class TypeChamp extends \Backend
 
     #region TexteArea
     /**
+     * textarea
      * Créer un champ Select en lien avec une table existante
-     * @param bool $tinyMce
+     * @param bool $tinyMce: utiliser tinyMce ou pas
      * @param bool $obligatoire
      * @return array
      */
@@ -99,6 +102,7 @@ class TypeChamp extends \Backend
 
     #region Switch
     /**
+     * ouiNon
      * Créer un champ avec juste une case a coché, fait office de Oui/Non
      * @param bool $obligatoire
      * @param int $default 0 ou 1
@@ -118,6 +122,7 @@ class TypeChamp extends \Backend
 
     #region Date
     /**
+     * date
      * Créer un champ avec juste une case a coché, fait office de Oui/Non
      * @param bool $heures On a les heures ou pas ?
      * @param bool $obligatoire
@@ -139,6 +144,7 @@ class TypeChamp extends \Backend
 
     #region Select a partir d'une table
     /**
+     * selectTable
      * Créer un champ Select en lien avec une table existante
      * @param string $foreignKey tl_article.name
      * @param bool $multiple
@@ -163,6 +169,7 @@ class TypeChamp extends \Backend
 
     #region Select
     /**
+     * select
      * Créer un champ Select
      * @param array $options Liste des options dans un tableau (avec ou sans key)
      * @param bool $multiple
@@ -211,19 +218,18 @@ class TypeChamp extends \Backend
 
     #region Checkboxs
     /**
+     * checkbox
      * Créer un champ Checkbox
      * @param array $options Liste des options dans un tableau (avec ou sans key)
      * @return array
      */
-    public static function checkbox($options, $obligatoire = false)
+    public static function checkbox($options)
     {
         $item = array(
             'inputType' => 'checkbox',
-            'filter'    => true,
             'options'   => $options,
             'eval'      => array(
-                'multiple'  => true,
-                'mandatory' => true,
+                'multiple' => true,
             ),
             'sql'       => 'blob NULL',
         );
@@ -232,6 +238,7 @@ class TypeChamp extends \Backend
     }
 
     /**
+     * checkboxTable
      * Créer un champ Checkbox en lien avec une table
      * @param string $options tl_article.name
      * @return array
@@ -251,6 +258,7 @@ class TypeChamp extends \Backend
     }
 
     /**
+     * checkboxCallback
      * Créer un champ Checkbox qui récupère les options à partir d'une function
      * @param string $options array('maClasse','MaFonction')
      * @return array
@@ -272,6 +280,7 @@ class TypeChamp extends \Backend
 
     #region Fichiers
     /**
+     * fichier
      * @param bool $multiple
      * @param bool $obligatoire
      * @return array
@@ -288,31 +297,16 @@ class TypeChamp extends \Backend
                 'multiple'   => $multiple,
                 'files'      => true,
                 'extensions' => \Contao\Config::get('uploadTypes'),
-                //'path'      => sprintf('/files/uploads/%s/%s/', date('Y'), date('m')),
             ],
             'sql'       => "blob NULL",
         );
-        /*
-        $item = array(
-        'exclude'   => true,
-        'inputType' => 'multifileupload',
-        'eval'      => [
-        'tl_class'     => 'clr',
-        'fieldType'    => ($multiple === true) ? 'checkbox' : 'radio',
-        'uploadFolder' => sprintf('/files/uploads/%s/%s/', date('Y'), date('m')),
-        'labels'       => array(
-        'head' => 'Pour télécharger un fichier, déposez-le ici ou cliquez sur le champ.',
-        ),
-        ],
-        'sql'       => "blob NULL",
-        );
-         */
         return $item;
     }
     #endregion
 
     #region Dossier
     /**
+     * dossier
      * @param bool $multiple
      * @param bool $obligatoire
      * @return array
@@ -337,6 +331,7 @@ class TypeChamp extends \Backend
 
     #region Multicolumn
     /**
+     * Multi Column Wizard
      * @param string $table tl_article
      * @param string $champ nomChamp
      * @param array $cols array('annee' => 'text', 'id' => 'text')
@@ -394,6 +389,11 @@ class TypeChamp extends \Backend
     #endregion
 
     #region List Wizard
+    /**
+     * listWizard
+     *
+     * @return array
+     */
     public static function listWizard()
     {
         $item = array(
@@ -410,7 +410,14 @@ class TypeChamp extends \Backend
     #endregion
 
     #region Alias
-    public static function alias($table)
+    /**
+     * alias
+     *
+     * @param  string $table = le nom de la table en cours vers laquelle faire pointer le generateAlias
+     * @param string $fonction = la fonction appellée (utilie quand on a 2 type d'alias différents)
+     * @return array
+     */
+    public static function alias($table, $fonction = 'generateAlias')
     {
         $item = array(
             'inputType'     => 'text',
@@ -419,7 +426,7 @@ class TypeChamp extends \Backend
             'eval'          => array('rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'save_callback' => array
             (
-                array($table, 'generateAlias'),
+                array($table, $fonction),
             ),
         );
 
@@ -427,7 +434,35 @@ class TypeChamp extends \Backend
     }
     #endregion
 
+    #region PageTree
+
+    /**
+     * Selecteur de page
+     *
+     * @param  boolean $obligatoire
+     * @return void
+     */
+    public static function pageTree($obligatoire = false)
+    {
+        return array(
+            'inputType'  => 'pageTree',
+            'foreignKey' => 'tl_page.title',
+            'eval'       => array('fieldType' => 'radio', 'mandatory' => $obligatoire, 'tl_class' => 'w50'),
+            'sql'        => "int(10) unsigned NOT NULL default 0",
+            'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+        );
+
+    }
+    #endregion
+
     #region Traductions = Ajouter les traductions de base, commune a une grande majorité des tables
+    /**
+     * traduction
+     * Ajoute toute les traductions de base qui sont généralement communes.
+     *
+     * @param  string $t = nom de la table
+     * @return void
+     */
     public static function traductions($t)
     {
         $GLOBALS['TL_LANG'][$t]['name'][0]      = "Nom";
@@ -448,6 +483,12 @@ class TypeChamp extends \Backend
     }
     #endregion
 
+    /**
+     * toggleButton
+     *  le code pour appeller le bouton toggle dans les Operations
+     * @param  string $table
+     * @return array
+     */
     public static function toggleButton($table)
     {
         return array(
@@ -458,12 +499,22 @@ class TypeChamp extends \Backend
         );
     }
 
-    /*
-    Dans la table parent, appellé comme suit :
+    /**
+     * toggleIcon
+     * Dans la table parent, appellé comme suit :
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
     return TypeChamp::toggleIcon($this, $row, $href, $label, $title, $icon, $attributes);
     }
+     *
+     * @param  [type] $table
+     * @param  [type] $row
+     * @param  [type] $href
+     * @param  [type] $label
+     * @param  [type] $title
+     * @param  [type] $icon
+     * @param  [type] $attributes
+     * @return void
      */
     public function toggleIcon($table, $row, $href, $label, $title, $icon, $attributes)
     {
@@ -480,12 +531,18 @@ class TypeChamp extends \Backend
         return '<a href="' . $table->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $table->generateImage($icon, $label) . '</a> ';
     }
 
-    /*
-    Dans la table parent, appellé comme suit :
+    /**
+     * toggleVisibility
+     * Dans la table parent, appellé comme suit :
     public function toggleVisibility($intId, $blnPublished)
     {
     return TypeChamp::toggleVisibility($this, $intId, $blnPublished);
     }
+     *
+     * @param  [type] $table
+     * @param  [type] $intId
+     * @param  [type] $blnPublished
+     * @return void
      */
     public function toggleVisibility($table, $intId, $blnPublished)
     {
@@ -504,6 +561,15 @@ class TypeChamp extends \Backend
         $table->Database->prepare("UPDATE " . $tableName . " SET tstamp=" . time() . ", published='" . ($blnPublished ? '' : '1') . "' WHERE id=?")->execute($intId);
     }
 
+    /**
+     * checkAlias
+     * vérifie que l'alias n'éxiste pas déjà. Si c'est le cas il ajoute -1 jusqu'a trouver un alias libre
+     *
+     * @param  string  $baseStr
+     * @param  string  $table
+     * @param  integer $i
+     * @return string
+     */
     public static function checkAlias($baseStr, $table, $i = 0)
     {
         $str = ($i != 0) ? $baseStr . '-' . $i : $baseStr;
@@ -515,6 +581,14 @@ class TypeChamp extends \Backend
         }
     }
 
+    /**
+     * generateAlias
+     * créer un alias a partir des données envoyées dans le tableau $values
+     *
+     * @param  array $values
+     * @param  string $table
+     * @return string
+     */
     public static function generateAlias($values, $table)
     {
         $varValue = implode('_', $values);
@@ -522,16 +596,35 @@ class TypeChamp extends \Backend
         return self::checkAlias($alias, $table);
     }
 
+    /**
+     * printIcon
+     * dépréciée
+     *
+     * @param  string $fichier
+     * @return string
+     */
     public static function printIcon($fichier)
     {
         return sprintf('%simg/%s', $GLOBALS['assetsFolder']['ContaoTypechampBundle'], $fichier);
     }
 
+    /**
+     * convertAbsoluteLinks
+     *
+     * @param  string $strContent
+     * @return string
+     */
     public function convertAbsoluteLinks($strContent)
     {
         return str_replace('src="' . \Environment::get('base'), 'src="', $strContent);
     }
 
+    /**
+     * convertRelativeLinks
+     *
+     * @param  string $strContent
+     * @return string
+     */
     public function convertRelativeLinks($strContent)
     {
         return $this->convertRelativeUrls($strContent);
