@@ -629,6 +629,127 @@ class TypeChamp extends \Backend
     {
         return $this->convertRelativeUrls($strContent);
     }
+
+    public function sortUp($table, $row, $href, $label, $title, $icon, $attributes)
+    {
+        $db = \Database::getInstance();
+
+        //MISE A JOUR DE L'ORDRE
+        if (isset($_GET['sortId']) and $_GET['ordre'] == "up") {
+            $thisId = $_GET['sortId'];
+            $dbObj  = $db->prepare("SELECT * FROM $table ORDER BY ordre ASC")->execute();
+            if ($dbObj->numRows == null) {
+                return false;
+            }
+
+            $allData = $dbObj->fetchAllAssoc();
+            foreach ($allData as $key => $data) {
+                if ($data['id'] == $thisId) {
+                    $temp        = $data;
+                    $newPosition = $key - 1;
+                    unset($allData[$key]);
+                }
+            }
+            if ($newPosition < 0) {
+                $newPosition = 0;
+            }
+
+            if ($newPosition > count($allData)) {
+                $newPosition = count($allData);
+            }
+
+            $newPosition = intval($newPosition);
+            $allData     = array_values($allData);
+            $newSorting  = array();
+            $counter     = 0;
+            foreach ($allData as $key => $data) {
+                if ($key == $newPosition) {
+                    $db->prepare("UPDATE $table SET ordre=? WHERE id=?")->execute($counter, $temp['id']);
+                    $counter++;
+                }
+                $db->prepare("UPDATE $table SET ordre=? WHERE id=?")->execute($counter, $data['id']);
+                $counter++;
+            }
+            \Backend::redirect(\Backend::getReferer());
+        }
+
+        //CREATION DES LIGNE DE BOUTONS
+        $res    = $db->prepare("SELECT * FROM $table ORDER BY ordre ASC")->execute();
+        $nbrows = $res->numRows;
+        if ($nbrows > 0) {
+            $counter = 0;
+            while ($res->next()) {
+                if ($res->id == $row['id']) {
+                    if ($counter == 0) {
+                        return '<span>' . \Backend::generateImage('demagnify.gif', $label) . '</span> ';
+                    } else {
+                        $href .= '&amp;sortId=' . $row['id'] . '&amp;sortValue=' . $row['ordre'];
+                        return '<a href="' . \Backend::addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . \Backend::generateImage($icon, $label) . '</a> ';
+                    }
+                }
+                $counter++;
+            }
+        }
+    }
+
+    public function sortDown($table, $href, $label, $title, $icon, $attributes)
+    {
+        $db = \Database::getInstance();
+        if (isset($_GET['sortId']) and $_GET['ordre'] == "down") {
+            $thisId = $_GET['sortId'];
+            $dbObj  = $db->prepare("SELECT * FROM  $table ORDER BY ordre ASC")->execute();
+            if ($dbObj->numRows == null) {
+                return false;
+            }
+
+            $allData = $dbObj->fetchAllAssoc();
+            foreach ($allData as $key => $data) {
+                if ($data['id'] == $thisId) {
+                    $temp        = $data;
+                    $newPosition = $key + 1;
+                    unset($allData[$key]);
+                }
+            }
+            if ($newPosition < 0) {
+                $newPosition = 0;
+            }
+
+            if ($newPosition > count($allData)) {
+                $newPosition = count($allData);
+            }
+
+            $newPosition = intval($newPosition);
+            $allData     = array_values($allData);
+            $newSorting  = array();
+            $counter     = 0;
+            foreach ($allData as $key => $data) {
+                if ($key == $newPosition) {
+                    $db->prepare("UPDATE  $table SET ordre=? WHERE id=?")->execute($counter, $temp['id']);
+                    $counter++;
+                }
+                $db->prepare("UPDATE  $table SET ordre=? WHERE id=?")->execute($counter, $data['id']);
+                $counter++;
+            }
+            \Backend::redirect(\Backend::getReferer());
+        }
+        $dbObj  = $db->prepare("SELECT * FROM  $table ORDER BY ordre ASC")->execute();
+        $anzObj = $dbObj->numRows;
+        if ($anzObj != null) {
+            $counter = 0;
+            while ($dbObj->next()) {
+                if ($dbObj->id == $row['id']) {
+                    if ($counter == $anzObj - 1) {
+                        /* Last */
+                        return '<span>' . \Backend::generateImage('demagnify.gif', $label) . '</span> ';
+                    } else {
+                        $href .= '&amp;sortId=' . $row['id'] . '&amp;sortValue=' . $row['ordre'];
+                        return '<a href="' . \Backend::addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . \Backend::generateImage($icon, $label) . '</a> ';
+                    }
+                }
+                $counter++;
+            }
+        }
+    }
 }
 
 class_alias(TypeChamp::class, 'TypeChamp');
