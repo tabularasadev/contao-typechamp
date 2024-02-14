@@ -35,9 +35,10 @@ class TypeChamp extends \Backend
      * Créer un champ Texte en lien avec une table existante
      * @param bool $obligatoire
      * @param string $classe w50/clr
+     * @param array $callback par exemple [[$t,'toUpper']]
      * @return array
      */
-    public static function text($obligatoire = false, $classe = 'w50')
+    public static function text($obligatoire = false, $classe = 'w50', $callback = [])
     {
         $item = array(
             'inputType' => 'text',
@@ -45,6 +46,10 @@ class TypeChamp extends \Backend
             'eval'      => array('maxlength' => 255, 'tl_class' => $classe, 'mandatory' => $obligatoire),
             'sql'       => "varchar(255) NOT NULL default ''",
         );
+
+        if (Count($callback) > 0) {
+            $item['save_callback'] = $callback;
+        }
 
         return $item;
     }
