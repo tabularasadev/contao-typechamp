@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "contao/core-bundle": "^4.10 | ^4.12"
+        "contao/core-bundle": "^4 | ^5"
     },
     "license": "Not free",
     "autoload": {
